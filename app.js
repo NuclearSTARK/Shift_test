@@ -1,5 +1,5 @@
 const { useState, useEffect, useRef, useCallback } = React;
-// ver5.3.1: 아이콘/상단헤더/관리자 직원DB/개인근무지 수정, 자동배치 로직 유지
+// ver5.3.2: 홈화면 모바일 헤더/개인설정 발전소명 수정, 자동배치 로직 유지
 
 
 // ── 발전별 포지션 정의 ────────────────────────────────────
@@ -1100,96 +1100,105 @@ function App() {
 
   // 그리드 컬럼: 날짜 + 근무 + 포지션수
   const gridCols = `88px 42px ${positions.map(() => "1fr").join(" ")}`;
+  const divisionLabel = division === "1발전" ? "1발전소" : "2발전소";
+  const selectedMyDivisionLabel = selectedMyDivision === "1발전" ? "1발전소" : "2발전소";
 
   return (
     <div style={{ minHeight:"100vh", background:"linear-gradient(135deg,#0f172a 0%,#1e293b 100%)", fontFamily:"'Segoe UI','Apple SD Gothic Neo',sans-serif", color:"#e2e8f0", padding:"20px 14px" }}>
       <div style={{ maxWidth:920, margin:"0 auto" }}>
 
-        {/* ── 최상단 앱 헤더 ── */}
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, marginBottom:14, padding:"2px 2px 8px" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <img src="./icon-192.png" alt="SP" style={{ width:42, height:42, borderRadius:12, objectFit:"cover" }} />
-            <div>
-              <div style={{ fontSize:22, fontWeight:950, letterSpacing:"0.4px", color:"#f8fafc", lineHeight:1 }}>SEUL POLICE</div>
-              <div style={{ fontSize:11, color:"#94a3b8", fontWeight:800, marginTop:4 }}>{band} {division} 근무자 배치 자동화</div>
+        {/* ── 최상단 홈 헤더: 모바일 앱 스타일 ── */}
+        <div style={{
+          margin:"-20px -14px 18px",
+          padding:"26px 18px 20px",
+          background:"linear-gradient(180deg,#0b1224 0%,#101827 58%,rgba(16,24,39,0.92) 100%)",
+          borderBottom:"1px solid rgba(51,65,85,0.45)",
+          boxShadow:"0 12px 38px rgba(0,0,0,0.18)",
+        }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:14, marginBottom:22 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:14, minWidth:0 }}>
+              <img src="./icon-192.png" alt="SP" style={{ width:52, height:52, objectFit:"contain", border:"none", borderRadius:0, background:"transparent", flexShrink:0 }} />
+              <div style={{ minWidth:0 }}>
+                <div style={{ fontSize:34, fontWeight:950, letterSpacing:"-1.2px", color:"#f8fafc", lineHeight:1.02 }}>Seul Police</div>
+                <div style={{ fontSize:16, color:"#94a3b8", fontWeight:850, marginTop:8, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{band} {divisionLabel} 근무자 배치 자동화</div>
+              </div>
+            </div>
+            <button onClick={() => setShowSettings(true)} style={{
+              width:62, height:62, borderRadius:18, border:"1.5px solid #334155",
+              background:"rgba(15,23,42,0.88)", color:"#f8fafc", fontSize:30, fontWeight:900, cursor:"pointer",
+              boxShadow:"inset 0 1px 0 rgba(255,255,255,0.05)", flexShrink:0
+            }} aria-label="설정">⚙️</button>
+          </div>
+
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, marginBottom:16 }}>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"10px 14px", borderRadius:999, background:"rgba(5,92,38,0.88)", border:"1.5px solid rgba(34,197,94,0.35)", color:"#bbf7d0", fontSize:16, fontWeight:950 }}>
+              <span style={{ width:18, height:18, borderRadius:999, background:"#22c55e", boxShadow:"0 0 14px rgba(34,197,94,0.95)", display:"inline-block" }}></span> 온라인
+            </div>
+            <div style={{ display:"flex", alignItems:"center", gap:9 }}>
+              <button onClick={() => { setSelectedYear(today.getFullYear()); setSelectedMonth(today.getMonth()+1); }} style={{ background:"#334155", border:"none", borderRadius:14, color:"#fff", fontSize:17, fontWeight:950, padding:"11px 16px", cursor:"pointer" }}>📅 오늘</button>
+              <button onClick={() => setShowAdminTools(true)} style={{ background:"linear-gradient(135deg,#2563eb,#1d4ed8)", border:"none", borderRadius:14, color:"#fff", fontSize:17, fontWeight:950, padding:"11px 16px", cursor:"pointer" }}>✏️ 편집</button>
             </div>
           </div>
-          <button onClick={() => setShowSettings(true)} style={{ width:44, height:44, borderRadius:14, border:"none", background:"rgba(30,41,59,0.86)", color:"#f8fafc", fontSize:21, fontWeight:900, cursor:"pointer" }} aria-label="설정">⚙️</button>
-        </div>
 
-        {/* ── 헤더 ── */}
-        <div style={{ marginBottom:18 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:10, flexWrap:"wrap" }}>
-            {/* 반 선택 */}
-            <div style={{ display:"flex", background:"#0f172a", border:"1.5px solid #334155", borderRadius:9, padding:3, gap:2 }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 0.9fr", gap:12, marginBottom:12 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", background:"#0f172a", border:"1.5px solid #334155", borderRadius:17, padding:4, gap:3 }}>
               {["A반","B반","C반","D반"].map(b => (
-                <button key={b} onClick={() => { setBand(b); }} style={{
-                  padding:"6px 10px", borderRadius:7, border:"none", fontSize:13, fontWeight:800,
-                  cursor:"pointer", transition:"all 0.15s",
-                  background: band === b ? "linear-gradient(135deg,#0ea5e9,#6366f1)" : "transparent",
+                <button key={b} onClick={() => setBand(b)} style={{
+                  padding:"12px 0", borderRadius:13, border:"none", fontSize:18, fontWeight:950, cursor:"pointer",
+                  background: band === b ? "linear-gradient(135deg,#38bdf8,#4f46e5)" : "transparent",
                   color: band === b ? "#fff" : "#64748b",
                 }}>{b}</button>
               ))}
             </div>
-
-            {/* 발전 토글 */}
-            <div style={{ display:"flex", background:"#0f172a", border:"1.5px solid #334155", borderRadius:9, padding:3, gap:3 }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", background:"#0f172a", border:"1.5px solid #334155", borderRadius:17, padding:4, gap:4 }}>
               {["1발전","2발전"].map(div => (
-                <button key={div} onClick={() => { setDivision(div); }} style={{
-                  padding:"6px 14px", borderRadius:7, border:"none", fontSize:13, fontWeight:800,
-                  cursor:"pointer", transition:"all 0.15s",
-                  background: division === div
-                    ? (div === "1발전" ? "linear-gradient(135deg,#f59e0b,#f97316)" : "linear-gradient(135deg,#6366f1,#8b5cf6)")
-                    : "transparent",
+                <button key={div} onClick={() => setDivision(div)} style={{
+                  padding:"12px 0", borderRadius:13, border:"none", fontSize:18, fontWeight:950, cursor:"pointer",
+                  background: division === div ? "linear-gradient(135deg,#f59e0b,#f97316)" : "transparent",
                   color: division === div ? "#fff" : "#64748b",
                 }}>{div}</button>
               ))}
             </div>
+          </div>
 
-            {/* 년도 */}
-            <div style={{ position:"relative", display:"inline-block" }}>
-              <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} style={selectStyle}>
+          <div style={{ display:"grid", gridTemplateColumns:"1.1fr 0.85fr 0.9fr", gap:12, marginBottom:14 }}>
+            <div style={{ position:"relative" }}>
+              <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))} style={{ ...selectStyle, width:"100%", minHeight:56, fontSize:22, borderRadius:14, paddingLeft:17 }}>
                 {yearOptions.map(y => <option key={y} value={y}>{y}년</option>)}
               </select>
-              <span style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)", color:"#64748b", pointerEvents:"none", fontSize:11 }}>▼</span>
+              <span style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", color:"#64748b", pointerEvents:"none", fontSize:13 }}>◆</span>
             </div>
-
-            {/* 월 */}
-            <div style={{ position:"relative", display:"inline-block" }}>
-              <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} style={selectStyle}>
+            <div style={{ position:"relative" }}>
+              <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))} style={{ ...selectStyle, width:"100%", minHeight:56, fontSize:22, borderRadius:14, paddingLeft:17 }}>
                 {monthOptions.map(m => <option key={m} value={m}>{m}월</option>)}
               </select>
-              <span style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)", color:"#64748b", pointerEvents:"none", fontSize:11 }}>▼</span>
+              <span style={{ position:"absolute", right:14, top:"50%", transform:"translateY(-50%)", color:"#64748b", pointerEvents:"none", fontSize:13 }}>◆</span>
             </div>
-
-            {/* 근무자 수: 관리자모드에서만 수정 */}
             {isAdminMode ? (
-              <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                <span style={{ fontSize:12, color:"#64748b", fontWeight:600, whiteSpace:"nowrap" }}>근무자 수</span>
-                <div style={{ display:"flex", background:"#0f172a", border:"1.5px solid #334155", borderRadius:9, padding:3, gap:3 }}>
-                  {[4,5,6].map(n => (
-                    <button key={n} onClick={() => handleWorkerCountChange(n)} style={{
-                      width:34, height:30, borderRadius:7, border:"none", fontSize:13, fontWeight:800,
-                      cursor:"pointer", transition:"all 0.15s",
-                      background: workerCount === n ? "linear-gradient(135deg,#0ea5e9,#2563eb)" : "transparent",
-                      color: workerCount === n ? "#fff" : "#64748b",
-                    }}>{n}</button>
-                  ))}
-                </div>
-              </div>
+              <select value={workerCount} onChange={e => handleWorkerCountChange(Number(e.target.value))} style={{ ...selectStyle, width:"100%", minHeight:56, fontSize:18, borderRadius:14 }}>
+                {[4,5,6].map(n => <option key={n} value={n}>근무자 {n}명</option>)}
+              </select>
             ) : (
-              <div style={{ fontSize:12, color:"#64748b", fontWeight:800, padding:"7px 9px", background:"#0f172a", border:"1px solid #334155", borderRadius:8 }}>
-                근무자 {workerCount}명
-              </div>
+              <div style={{ minHeight:56, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, color:"#94a3b8", fontWeight:950, background:"#0f172a", border:"1.5px solid #334155", borderRadius:14 }}>근무자 {workerCount}명</div>
             )}
-
-
           </div>
 
-          <div style={{ fontSize:12, color:"#94a3b8", marginTop:8 }}>
-            오늘: {today.getFullYear()}년 {today.getMonth()+1}월 {today.getDate()}일 ({DOW_KR[today.getDay()]})
-            &nbsp;·&nbsp; 🔴 주말/공휴일 표시
-          </div>
+          {notice && (
+            <div style={{
+              background:"linear-gradient(90deg,#991b1b,#b91c1c)", border:"1.5px solid #ef4444", borderRadius:16,
+              padding:"12px 14px", color:"#fff", fontSize:24, fontWeight:950, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
+              boxShadow:"0 8px 24px rgba(185,28,28,0.22)", marginBottom:14
+            }}>{notice}</div>
+          )}
+
+          {homeOptions.showPositionOrder && (
+            <button onClick={() => setShowAdminTools(true)} style={{
+              width:"100%", minHeight:56, display:"flex", alignItems:"center", justifyContent:"space-between",
+              background:"rgba(15,23,42,0.85)", border:"1.5px solid #334155", borderRadius:17, color:"#f8fafc", fontSize:21, fontWeight:950, padding:"0 17px", cursor:"pointer"
+            }}>
+              <span>근무지설정</span><span style={{ color:"#94a3b8" }}>▸</span>
+            </button>
+          )}
         </div>
 
         {(homeOptions.showToday || homeOptions.showMyWork) && (
@@ -1207,9 +1216,9 @@ function App() {
             {homeOptions.showMyWork && selectedMyName && (
               <div style={{ background:"rgba(15,23,42,0.78)", border:"1px solid #334155", borderRadius:16, padding:"14px 15px" }}>
                 <div style={{ fontSize:11, color:"#fde68a", fontWeight:900, marginBottom:6 }}>내 근무 카드</div>
-                <div style={{ fontSize:19, fontWeight:950, color:"#fff", marginBottom:8 }}>{selectedMyName} · {mySettings.band || band} · {selectedMyDivision}</div>
+                <div style={{ fontSize:19, fontWeight:950, color:"#fff", marginBottom:8 }}>{selectedMyName} · {mySettings.band || band} · {selectedMyDivisionLabel}</div>
                 <div style={{ fontSize:13, color:"#fef3c7", lineHeight:1.7 }}>
-                  {selectedMyDivision !== division ? "선택한 발전의 배치표에서 확인하세요." : (<>
+                  {selectedMyDivision !== division ? "선택한 발전소의 배치표에서 확인하세요." : (<>
                     오늘: {todaySchedule?.shift === "휴" ? "휴무" : (myTodayPositions.length ? `${todaySchedule?.shift} · ${myTodayPositions.join(", ")}` : "배치 없음")}<br/>
                     내일: {tomorrowSchedule?.shift === "휴" ? "휴무" : (myTomorrowPositions.length ? `${tomorrowSchedule?.shift} · ${myTomorrowPositions.join(", ")}` : "배치 없음")}
                   </>)}
@@ -1817,8 +1826,8 @@ function App() {
                     </label>
                     <label style={{ display:"grid", gap:6, color:"#cbd5e1", fontWeight:900, fontSize:13 }}>나의 근무지
                       <select value={mySettings.division || division} onChange={e => setMySettings(v=>({...v, division:e.target.value}))} style={selectStyle}>
-                        <option value="1발전">1발전</option>
-                        <option value="2발전">2발전</option>
+                        <option value="1발전">1발전소</option>
+                        <option value="2발전">2발전소</option>
                       </select>
                     </label>
                   </div>
