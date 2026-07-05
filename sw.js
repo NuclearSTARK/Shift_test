@@ -1,10 +1,10 @@
-const CACHE_NAME = "seul-police-cache-v5300";
+const CACHE_NAME = "seul-police-cache-v5310";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=5300",
-  "./app.js?v=5300",
-  "./firebase.js?v=5300",
+  "./styles.css?v=5310",
+  "./app.js?v=5310",
+  "./firebase.js?v=5310",
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
