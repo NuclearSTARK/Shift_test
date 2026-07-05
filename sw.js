@@ -1,13 +1,14 @@
-const CACHE_NAME = "seul-police-cache-v5070";
+const CACHE_NAME = "seul-police-cache-v5300";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=5070",
-  "./app.js?v=5070",
-  "./firebase.js?v=5070",
+  "./styles.css?v=5300",
+  "./app.js?v=5300",
+  "./firebase.js?v=5300",
   "./manifest.json",
   "./icon-192.png",
-  "./icon-512.png"
+  "./icon-512.png",
+  "./apple-touch-icon.png"
 ];
 
 self.addEventListener("install", event => {

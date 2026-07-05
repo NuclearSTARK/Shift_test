@@ -5,3 +5,13 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: #1e293b; }
     ::-webkit-scrollbar-thumb { background: #475569; border-radius: 2px; }
+
+html, body { width: 100%; min-height: 100%; overscroll-behavior: none; }
+body { margin: 0; -webkit-font-smoothing: antialiased; touch-action: manipulation; }
+button, select, input, textarea { font-family: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+@media (max-width: 640px) {
+  body { background: #0f172a; }
+  #root { min-height: 100vh; }
+  select, input, button { min-height: 38px; }
+}
